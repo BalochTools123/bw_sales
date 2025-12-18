@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +24,7 @@
             margin: 0 auto;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -37,7 +38,7 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .header p {
@@ -57,7 +58,7 @@
             background: white;
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             text-align: center;
             transition: transform 0.3s ease;
         }
@@ -83,10 +84,21 @@
             font-size: 0.9em;
         }
 
-        .today { color: #27ae60; }
-        .total { color: #3498db; }
-        .profit { color: #e74c3c; }
-        .items { color: #f39c12; }
+        .today {
+            color: #27ae60;
+        }
+
+        .total {
+            color: #3498db;
+        }
+
+        .profit {
+            color: #e74c3c;
+        }
+
+        .items {
+            color: #f39c12;
+        }
 
         .content {
             padding: 30px;
@@ -108,7 +120,7 @@
             overflow-x: auto;
             background: white;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
 
         table {
@@ -117,7 +129,8 @@
             min-width: 800px;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ecf0f1;
@@ -146,7 +159,7 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             border-left: 5px solid #3498db;
         }
 
@@ -189,7 +202,6 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-            margin-bottom: 20px;
             transition: background 0.3s ease;
         }
 
@@ -215,23 +227,111 @@
             .header h1 {
                 font-size: 2em;
             }
-            
+
             .stats-grid {
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 15px;
                 padding: 20px;
             }
-            
+
             .content {
                 padding: 20px;
             }
-            
+
             .user-stats {
                 grid-template-columns: 1fr;
             }
+
+            .controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .date-filters {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .filter-group input {
+                width: 100%;
+            }
+        }
+
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .date-filters {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-family: inherit;
+            color: #2c3e50;
+        }
+
+        .filter-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            height: 38px;
+        }
+
+        .filter-btn:hover {
+            background: #2ecc71;
+        }
+
+        .reset-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            height: 38px;
+        }
+
+        .reset-btn:hover {
+            background: #7f8c8d;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -253,18 +353,37 @@
             <div class="stat-card">
                 <h3>Total Sales</h3>
                 <div class="value total" id="totalSales">PKR 0</div>
-                <div class="label">All Time Revenue</div>
+                <div class="label" id="totalSalesLabel">Last 7 Days Revenue</div>
             </div>
             <div class="stat-card">
-                <h3>Items Sold Today</h3>
+                <h3>Total Profit</h3>
+                <div class="value profit" id="totalProfit">PKR 0</div>
+                <div class="label" id="totalProfitLabel">Last 7 Days Profit</div>
+            </div>
+            <div class="stat-card">
+                <h3>Items Sold</h3>
                 <div class="value items" id="todayItems">0</div>
-                <div class="label">Products Sold</div>
+                <div class="label" id="itemsSoldLabel">Products Sold (Period)</div>
             </div>
         </div>
 
         <div class="content">
-            <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
-            
+            <div class="controls-bar">
+                <div class="date-filters">
+                    <div class="filter-group">
+                        <label>Start Date</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="filter-group">
+                        <label>End Date</label>
+                        <input type="date" id="endDate">
+                    </div>
+                    <button class="filter-btn" onclick="applyDateFilter()">Filter</button>
+                    <button class="reset-btn" onclick="resetFilters()">Reset</button>
+                </div>
+                <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
+            </div>
+
             <div id="loadingMessage" class="loading">
                 Loading sales data...
             </div>
@@ -332,14 +451,94 @@
     <script>
         // Configuration - Update this with your Gist URL
         const GIST_URL = 'https://gist.githubusercontent.com/BalochTools123/5efc12ef2de66de1b52aeb838c92c158/raw/sales_data.json';
-        
+
         // You can also use a local file for testing
         // const GIST_URL = './sales_data.json';
 
         let salesData = null;
+        let originalSalesRecords = [];
+
+        function initDateFilters() {
+            const today = new Date();
+            const lastWeek = new Date(today);
+            lastWeek.setDate(today.getDate() - 7);
+
+            document.getElementById('endDate').valueAsDate = today;
+            document.getElementById('startDate').valueAsDate = lastWeek;
+        }
+
+        function resetFilters() {
+            initDateFilters();
+            applyDateFilter();
+        }
+
+        function applyDateFilter() {
+            if (!originalSalesRecords.length) return;
+
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            // Set end date to end of day
+            endDate.setHours(23, 59, 59, 999);
+            startDate.setHours(0, 0, 0, 0);
+
+            const filteredRecords = originalSalesRecords.filter(record => {
+                const recordDate = new Date(record.sale_date);
+                return recordDate >= startDate && recordDate <= endDate;
+            });
+
+            // Calculate statistics for filtered data
+            const stats = calculateStats(filteredRecords);
+
+            // Update UI
+            updateStatistics(stats, true); // true indicates filtered mode
+            updateSalesTable(filteredRecords);
+            updateTopProductsFromRecords(filteredRecords);
+        }
+
+        function calculateStats(records) {
+            let totalSales = 0;
+            let totalProfit = 0;
+            let itemsSold = 0;
+
+            records.forEach(record => {
+                totalSales += record.total_price;
+                totalProfit += record.profit;
+                itemsSold += record.quantity;
+            });
+
+            // For "Today's" stats, we still go back to the original full dataset or handle it separately.
+            // However, the user request specifically asked for "Total revenue and profit also updates according to the filter".
+            // So we will pass these calculated totals to updateStatistics.
+
+            return {
+                total_sales: totalSales,
+                total_profit: totalProfit,
+                total_items_sold: itemsSold
+            };
+        }
+
+        function updateTopProductsFromRecords(records) {
+            const productStats = {};
+
+            records.forEach(record => {
+                const name = record.product_name;
+                if (!productStats[name]) {
+                    productStats[name] = {
+                        total_quantity: 0,
+                        total_sales: 0,
+                        total_profit: 0
+                    };
+                }
+                productStats[name].total_quantity += record.quantity;
+                productStats[name].total_sales += record.total_price;
+                productStats[name].total_profit += record.profit;
+            });
+
+            updateTopProducts(productStats);
+        }
 
         function formatCurrency(amount) {
-            return `PKR ${parseFloat(amount).toLocaleString('en-PK', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            return `PKR ${parseFloat(amount).toLocaleString('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
         function formatDate(dateString) {
@@ -371,11 +570,49 @@
             document.getElementById('mainContent').style.display = 'block';
         }
 
-        function updateStatistics(stats) {
-            document.getElementById('todaySales').textContent = formatCurrency(stats.today_sales || 0);
-            document.getElementById('todayProfit').textContent = formatCurrency(stats.today_profit || 0);
+        function updateStatistics(stats, isFiltered = false) {
+            // "Today" stats should always come from the main salesData statistics object to remain accurate to "Today" regardless of filter,
+            // UNLESS the user wants "Today" to verify logic. 
+            // But typically "Today" cards are static dashboard elements. 
+            // The "Total" cards will now reflect the Filtered Range.
+
+            if (salesData && salesData.statistics) {
+                document.getElementById('todaySales').textContent = formatCurrency(salesData.statistics.today_sales || 0);
+                document.getElementById('todayProfit').textContent = formatCurrency(salesData.statistics.today_profit || 0);
+                document.getElementById('todayItems').textContent = (salesData.statistics.today_items_sold || 0).toLocaleString();
+            }
+
             document.getElementById('totalSales').textContent = formatCurrency(stats.total_sales || 0);
-            document.getElementById('todayItems').textContent = (stats.today_items_sold || 0).toLocaleString();
+
+            // Update Total Profit
+            if (document.getElementById('totalProfit')) {
+                document.getElementById('totalProfit').textContent = formatCurrency(stats.total_profit || 0);
+            }
+
+            // Update Items Sold (Period)
+            if (document.getElementById('todayItems')) {
+                // We use todayItems ID for item count to reuse existing element, but logic is now period based
+                document.getElementById('todayItems').textContent = (stats.total_items_sold || 0).toLocaleString();
+            }
+
+            // We need to update the card labels to reflect that it's filtered
+            if (isFiltered) {
+                document.getElementById('totalSalesLabel').textContent = "Revenue (Selected Period)";
+                if (document.getElementById('totalProfitLabel')) {
+                    document.getElementById('totalProfitLabel').textContent = "Profit (Selected Period)";
+                }
+                if (document.getElementById('itemsSoldLabel')) {
+                    document.getElementById('itemsSoldLabel').textContent = "Products Sold (Selected Period)";
+                }
+            } else {
+                document.getElementById('totalSalesLabel').textContent = "All Time Revenue";
+                if (document.getElementById('totalProfitLabel')) {
+                    document.getElementById('totalProfitLabel').textContent = "All Time Profit";
+                }
+                if (document.getElementById('itemsSoldLabel')) {
+                    document.getElementById('itemsSoldLabel').textContent = "Products Sold (All Time)";
+                }
+            }
         }
 
         function updateUserStats(userStats) {
@@ -416,10 +653,12 @@
             const tbody = document.getElementById('salesTableBody');
             tbody.innerHTML = '';
 
-            // Show only the most recent 50 records for performance
-            const recentRecords = salesRecords.slice(0, 50);
+            // If we are filtering, we typically want to show all matching records, 
+            // but for performance we might still want to limit if thousands.
+            // For now, let's show up to 500 if filtered, or just all of them.
+            // The user said "show last week's all records".
 
-            recentRecords.forEach(record => {
+            salesRecords.forEach(record => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${formatDate(record.sale_date)}</td>
@@ -464,18 +703,23 @@
                 // Add cache busting parameter to ensure fresh data
                 const url = GIST_URL + '?t=' + new Date().getTime();
                 const response = await fetch(url);
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
                 salesData = await response.json();
+                originalSalesRecords = salesData.sales_records || [];
 
-                // Update all sections
-                updateStatistics(salesData.statistics);
+                // Initialize filters if first load
+                if (!document.getElementById('startDate').value) {
+                    initDateFilters();
+                }
+
+                // Apply logic
+                applyDateFilter();
+
                 updateUserStats(salesData.statistics.user_stats || {});
-                updateSalesTable(salesData.sales_records || []);
-                updateTopProducts(salesData.statistics.top_products || {});
                 updateLastUpdated(salesData.statistics.last_updated || new Date().toISOString());
 
                 showContent();
@@ -492,17 +736,18 @@
         }
 
         // Initialize the dashboard
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadData();
             startAutoRefresh();
         });
 
         // Handle visibility change to refresh when tab becomes active
-        document.addEventListener('visibilitychange', function() {
+        document.addEventListener('visibilitychange', function () {
             if (!document.hidden) {
                 loadData();
             }
         });
     </script>
 </body>
+
 </html>
