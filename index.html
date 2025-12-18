@@ -493,6 +493,39 @@
             updateStatistics(stats, true); // true indicates filtered mode
             updateSalesTable(filteredRecords);
             updateTopProductsFromRecords(filteredRecords);
+            updateUserStatsFromRecords(filteredRecords);
+        }
+
+        function updateUserStatsFromRecords(records) {
+            const userStats = {};
+
+            records.forEach(record => {
+                const user = record.sold_by || 'Unknown';
+                if (!userStats[user]) {
+                    userStats[user] = {
+                        total_sales: 0,
+                        total_profit: 0,
+                        items_sold: 0,
+                        today_sales: 0,
+                        today_profit: 0
+                    };
+                }
+                userStats[user].total_sales += record.total_price;
+                userStats[user].total_profit += record.profit;
+                userStats[user].items_sold += record.quantity;
+            });
+
+            // Fill in "Today" stats from original data for context
+            if (salesData && salesData.statistics && salesData.statistics.user_stats) {
+                for (const [user, stats] of Object.entries(userStats)) {
+                    if (salesData.statistics.user_stats[user]) {
+                        stats.today_sales = salesData.statistics.user_stats[user].today_sales || 0;
+                        stats.today_profit = salesData.statistics.user_stats[user].today_profit || 0;
+                    }
+                }
+            }
+
+            updateUserStats(userStats, true);
         }
 
         function calculateStats(records) {
@@ -615,9 +648,13 @@
             }
         }
 
-        function updateUserStats(userStats) {
+        function updateUserStats(userStats, isFiltered = false) {
             const container = document.getElementById('userStats');
             container.innerHTML = '';
+
+            const totalSalesLabel = isFiltered ? "Sales (Period):" : "Total Sales:";
+            const totalProfitLabel = isFiltered ? "Profit (Period):" : "Total Profit:";
+            const itemsSoldLabel = isFiltered ? "Items (Period):" : "Items Sold:";
 
             for (const [username, stats] of Object.entries(userStats)) {
                 const userCard = document.createElement('div');
@@ -633,15 +670,15 @@
                         <span class="currency">${formatCurrency(stats.today_profit || 0)}</span>
                     </div>
                     <div class="user-stat">
-                        <span>Total Sales:</span>
+                        <span>${totalSalesLabel}</span>
                         <span class="currency">${formatCurrency(stats.total_sales || 0)}</span>
                     </div>
                     <div class="user-stat">
-                        <span>Total Profit:</span>
+                        <span>${totalProfitLabel}</span>
                         <span class="currency">${formatCurrency(stats.total_profit || 0)}</span>
                     </div>
                     <div class="user-stat">
-                        <span>Items Sold:</span>
+                        <span>${itemsSoldLabel}</span>
                         <span>${(stats.items_sold || 0).toLocaleString()}</span>
                     </div>
                 `;
@@ -719,7 +756,7 @@
                 // Apply logic
                 applyDateFilter();
 
-                updateUserStats(salesData.statistics.user_stats || {});
+                // updateUserStats removed from here as it is called inside applyDateFilter
                 updateLastUpdated(salesData.statistics.last_updated || new Date().toISOString());
 
                 showContent();
@@ -730,9 +767,9 @@
             }
         }
 
-        // Auto-refresh every 5 minutes
+        // Auto-refresh every 2 minutes
         function startAutoRefresh() {
-            setInterval(loadData, 5 * 60 * 1000); // 5 minutes
+            setInterval(loadData, 2 * 60 * 1000); // 2 minutes
         }
 
         // Initialize the dashboard
