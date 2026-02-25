@@ -329,6 +329,75 @@
         .reset-btn:hover {
             background: #7f8c8d;
         }
+
+        .product-search {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-search input {
+            padding: 8px 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-family: inherit;
+            color: #2c3e50;
+            min-width: 240px;
+        }
+
+        .search-btn {
+            background: #8e44ad;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            height: 38px;
+        }
+
+        .search-btn:hover {
+            background: #9b59b6;
+        }
+
+        .clear-search-btn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            height: 38px;
+        }
+
+        .clear-search-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .product-search-summary {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #ecf0f1;
+            display: none;
+        }
+
+        .product-search-summary h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .product-search-summary .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+        }
     </style>
 </head>
 
@@ -381,6 +450,15 @@
                     <button class="filter-btn" onclick="applyDateFilter()">Filter</button>
                     <button class="reset-btn" onclick="resetFilters()">Reset</button>
                 </div>
+
+                <div class="product-search">
+                    <div class="filter-group">
+                        <label>Search Product</label>
+                        <input type="text" id="productSearchInput" placeholder="Type product name...">
+                    </div>
+                    <button class="search-btn" onclick="applyProductSearch()">Search</button>
+                    <button class="clear-search-btn" onclick="clearProductSearch()">Clear</button>
+                </div>
                 <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
             </div>
 
@@ -393,6 +471,22 @@
             </div>
 
             <div id="mainContent" style="display: none;">
+                <div class="product-search-summary" id="productSearchSummary">
+                    <h3 id="productSearchTitle">Product Summary</h3>
+                    <div class="row">
+                        <span>Total Sold</span>
+                        <span id="productSearchSold">0</span>
+                    </div>
+                    <div class="row">
+                        <span>Total Revenue</span>
+                        <span class="currency" id="productSearchRevenue">PKR 0</span>
+                    </div>
+                    <div class="row">
+                        <span>Total Profit</span>
+                        <span class="currency" id="productSearchProfit">PKR 0</span>
+                    </div>
+                </div>
+
                 <div class="section">
                     <h2>👥 Sales by User</h2>
                     <div class="user-stats" id="userStats">
@@ -457,6 +551,8 @@
 
         let salesData = null;
         let originalSalesRecords = [];
+        let currentFilteredRecords = [];
+        let currentProductQuery = "";
 
         function initDateFilters() {
             const today = new Date();
@@ -486,14 +582,68 @@
                 return recordDate >= startDate && recordDate <= endDate;
             });
 
+            currentFilteredRecords = filteredRecords;
+
             // Calculate statistics for filtered data
             const stats = calculateStats(filteredRecords);
 
             // Update UI
             updateStatistics(stats, true); // true indicates filtered mode
-            updateSalesTable(filteredRecords);
-            updateTopProductsFromRecords(filteredRecords);
-            updateUserStatsFromRecords(filteredRecords);
+            const productFilteredRecords = filterRecordsByProductQuery(filteredRecords, currentProductQuery);
+            updateSalesTable(productFilteredRecords);
+            updateTopProductsFromRecords(productFilteredRecords);
+            updateUserStatsFromRecords(productFilteredRecords);
+
+            updateProductSearchSummary(productFilteredRecords, currentProductQuery);
+        }
+
+        function filterRecordsByProductQuery(records, query) {
+            const q = (query || "").trim().toLowerCase();
+            if (!q) return records;
+            return records.filter(r => String(r.product_name || "").toLowerCase().includes(q));
+        }
+
+        function applyProductSearch() {
+            const input = document.getElementById('productSearchInput');
+            currentProductQuery = (input.value || "").trim();
+            applyDateFilter();
+        }
+
+        function clearProductSearch() {
+            const input = document.getElementById('productSearchInput');
+            input.value = "";
+            currentProductQuery = "";
+            applyDateFilter();
+        }
+
+        function updateProductSearchSummary(records, query) {
+            const summary = document.getElementById('productSearchSummary');
+            const title = document.getElementById('productSearchTitle');
+            const soldEl = document.getElementById('productSearchSold');
+            const revenueEl = document.getElementById('productSearchRevenue');
+            const profitEl = document.getElementById('productSearchProfit');
+
+            const q = (query || "").trim();
+            if (!q) {
+                summary.style.display = 'none';
+                return;
+            }
+
+            let totalSold = 0;
+            let totalRevenue = 0;
+            let totalProfit = 0;
+
+            records.forEach(r => {
+                totalSold += Number(r.quantity || 0);
+                totalRevenue += Number(r.total_price || 0);
+                totalProfit += Number(r.profit || 0);
+            });
+
+            title.textContent = `Product Summary: ${q}`;
+            soldEl.textContent = totalSold.toLocaleString();
+            revenueEl.textContent = formatCurrency(totalRevenue);
+            profitEl.textContent = formatCurrency(totalProfit);
+            summary.style.display = 'block';
         }
 
         function updateUserStatsFromRecords(records) {
@@ -747,6 +897,7 @@
 
                 salesData = await response.json();
                 originalSalesRecords = salesData.sales_records || [];
+                currentFilteredRecords = originalSalesRecords;
 
                 // Initialize filters if first load
                 if (!document.getElementById('startDate').value) {
@@ -767,9 +918,9 @@
             }
         }
 
-        // Auto-refresh every 2 minutes
+        // Auto-refresh every 5 minutes
         function startAutoRefresh() {
-            setInterval(loadData, 2 * 60 * 1000); // 2 minutes
+            setInterval(loadData, 5 * 60 * 1000); // 5 minutes
         }
 
         // Initialize the dashboard
