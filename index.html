@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baloch Tools - Sales Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,361 +15,455 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #334155;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: white;
-            padding: 30px;
+            padding: 30px 25px 25px;
             text-align: center;
+            border-bottom: 3px solid #3b82f6;
         }
 
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 2.3em;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
         }
 
         .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
+            font-size: 1.05em;
+            opacity: 0.85;
+            color: #94a3b8;
         }
 
+        /* Shop Switcher Bar */
+        .shop-switcher-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .shop-switcher {
+            display: inline-flex;
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .shop-btn {
+            background: transparent;
+            color: #94a3b8;
+            border: none;
+            padding: 11px 26px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shop-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .shop-btn.active {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+        }
+
+        /* Active Shop Banner */
+        .active-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+            padding: 14px 28px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .active-banner strong {
+            color: #0f172a;
+            font-size: 16px;
+        }
+
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: #dbeafe;
+            color: #1e40af;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .sync-badge.live {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 30px;
-            background: #f8f9fa;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            padding: 24px 28px;
+            background: #f8fafc;
         }
 
         .stat-card {
             background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            text-align: center;
-            transition: transform 0.3s ease;
+            padding: 20px 22px;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
         }
 
         .stat-card h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .stat-card .value {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 1.85em;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
         }
 
         .stat-card .label {
-            color: #7f8c8d;
-            font-size: 0.9em;
+            color: #94a3b8;
+            font-size: 0.85em;
         }
 
-        .today {
-            color: #27ae60;
-        }
-
-        .total {
-            color: #3498db;
-        }
-
-        .profit {
-            color: #e74c3c;
-        }
-
-        .items {
-            color: #f39c12;
-        }
+        .today { color: #16a34a; }
+        .total { color: #2563eb; }
+        .profit { color: #dc2626; }
+        .items { color: #d97706; }
 
         .content {
-            padding: 30px;
-        }
-
-        .section {
-            margin-bottom: 40px;
-        }
-
-        .section h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #3498db;
-            font-size: 1.5em;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 800px;
-        }
-
-        th,
-        td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ecf0f1;
-        }
-
-        th {
-            background: #34495e;
-            color: white;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        .user-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .user-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            border-left: 5px solid #3498db;
-        }
-
-        .user-card h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-
-        .user-stat {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding: 5px 0;
-        }
-
-        .loading,
-        .error {
-            text-align: center;
-            padding: 50px;
-            font-size: 1.2em;
-        }
-
-        .error {
-            color: #e74c3c;
-        }
-
-        .refresh-btn,
-        .load-more-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background 0.3s ease;
-        }
-
-        .load-more-btn {
-            display: block;
-            margin: 20px auto;
-            background: #2c3e50;
-        }
-
-        .refresh-btn:hover {
-            background: #2980b9;
-        }
-
-        .last-updated {
-            text-align: center;
-            color: #7f8c8d;
-            font-size: 0.9em;
-            margin-top: 20px;
-            padding: 15px;
-            background: #ecf0f1;
-            border-radius: 5px;
-        }
-
-        .currency {
-            font-weight: bold;
+            padding: 28px;
         }
 
         .controls-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            gap: 20px;
+            margin-bottom: 24px;
+            gap: 16px;
             flex-wrap: wrap;
         }
 
         .date-filters,
         .product-search {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             align-items: flex-end;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            background: #f8fafc;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
         }
 
         .filter-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 4px;
         }
 
         .filter-group label {
-            font-size: 0.9em;
-            color: #7f8c8d;
-            font-weight: 600;
+            font-size: 0.82em;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .filter-group input,
         .filter-group select {
             padding: 8px 12px;
-            border: 1px solid #bdc3c7;
-            border-radius: 5px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
             font-family: inherit;
+            font-size: 14px;
+            background: white;
+            color: #1e293b;
         }
 
-        .filter-btn {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            height: 38px;
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        .reset-btn,
-        .clear-search-btn {
-            background: #95a5a6;
-            color: white;
+        .btn {
             border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
+            padding: 9px 18px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.15s ease;
             height: 38px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .search-btn {
-            background: #8e44ad;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            height: 38px;
-        }
+        .btn-green { background: #16a34a; color: white; }
+        .btn-green:hover { background: #15803d; }
+        .btn-gray { background: #e2e8f0; color: #475569; }
+        .btn-gray:hover { background: #cbd5e1; color: #0f172a; }
+        .btn-purple { background: #7c3aed; color: white; }
+        .btn-purple:hover { background: #6d28d9; }
+        .btn-blue { background: #2563eb; color: white; }
+        .btn-blue:hover { background: #1d4ed8; }
 
         .product-search-summary {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border: 1px solid #ecf0f1;
+            margin-bottom: 24px;
+            padding: 16px 20px;
+            background: #eff6ff;
+            border-radius: 12px;
+            border: 1px solid #bfdbfe;
             display: none;
         }
 
         .product-search-summary .row {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section h2 {
+            color: #0f172a;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 1.35em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 11px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .user-card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #2563eb;
+        }
+
+        .user-card h3 {
+            color: #0f172a;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .user-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 13.5px;
+            color: #64748b;
+        }
+
+        .user-stat span:last-child {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .load-more-btn {
+            display: block;
+            margin: 20px auto;
+            background: #0f172a;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .load-more-btn:hover {
+            background: #334155;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.85em;
+            margin-top: 25px;
+            padding: 14px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .currency {
+            font-family: inherit;
+            font-weight: 700;
+        }
+
+        .urdu-font {
+            font-family: 'Noto Nastaliq Urdu', serif;
+        }
+
+        .loading-overlay {
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.15em;
+            color: #64748b;
+        }
+
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
-
-            .date-filters,
-            .product-search {
+            .date-filters, .product-search {
                 flex-direction: column;
                 width: 100%;
                 align-items: stretch;
             }
-        }
-
-        .shop-switcher {
-            display: inline-flex;
-            gap: 10px;
-            margin-top: 15px;
-            background: rgba(0, 0, 0, 0.25);
-            padding: 6px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .shop-btn {
-            background: transparent;
-            color: #cbd5e1;
-            border: none;
-            padding: 10px 22px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .shop-btn:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .shop-btn.active {
-            background: #2563eb;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            .header h1 { font-size: 1.6em; }
+            .shop-btn { padding: 9px 16px; font-size: 13.5px; }
+            .active-banner { flex-direction: column; gap: 8px; text-align: center; }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
+        <!-- Header -->
         <div class="header">
             <h1>🔧 BALOCH TOOLS & WELDING MATERIALS</h1>
-            <p>Sales Dashboard & Analytics</p>
-            <div class="shop-switcher">
-                <button id="shopBtnMain" class="shop-btn active" onclick="switchShop('main')">
-                    🏪 Main Shop (مین دکان)
-                </button>
-                <button id="shopBtnHome" class="shop-btn" onclick="switchShop('home')">
-                    🏠 Home Shop (ہوم دکان)
-                </button>
+            <p>Real-Time Sales Dashboard & Cloud Analytics</p>
+            <div class="shop-switcher-container">
+                <div class="shop-switcher">
+                    <button id="shopBtnMain" class="shop-btn active" onclick="switchShop('main')">
+                        🏪 Main Shop (مین دکان)
+                    </button>
+                    <button id="shopBtnHome" class="shop-btn" onclick="switchShop('home')">
+                        🏠 Home Shop (ہوم دکان)
+                    </button>
+                </div>
             </div>
         </div>
 
+        <!-- Active Shop Identity Banner -->
+        <div class="active-banner">
+            <div>
+                Viewing: <strong id="activeShopTitle">🏪 Main Shop (مین دکان)</strong>
+                <span id="activeShopMeta" style="margin-left: 10px; color: #64748b;">(Connecting...)</span>
+            </div>
+            <div id="syncBadge" class="sync-badge">
+                <span id="syncDot">●</span>
+                <span id="syncText">Ready</span>
+            </div>
+        </div>
+
+        <!-- Top Statistics Grid -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Today's Sales</h3>
@@ -393,10 +488,11 @@
             <div class="stat-card">
                 <h3>Items Sold</h3>
                 <div class="value items" id="todayItems">0</div>
-                <div class="label" id="itemsSoldLabel">Products Sold (Today)</div>
+                <div class="label">Products Sold (Today)</div>
             </div>
         </div>
 
+        <!-- Main Body -->
         <div class="content">
             <div class="controls-bar">
                 <div class="date-filters">
@@ -417,39 +513,45 @@
                             <option value="C">Category C</option>
                         </select>
                     </div>
-                    <button class="filter-btn" onclick="applyDateFilter()">Filter</button>
-                    <button class="reset-btn" onclick="resetFilters()">Reset</button>
+                    <button class="btn btn-green" onclick="applyDateFilter()">Filter</button>
+                    <button class="btn btn-gray" onclick="resetFilters()">Reset</button>
                 </div>
 
                 <div class="product-search">
                     <div class="filter-group">
                         <label>Search Product</label>
-                        <input type="text" id="productSearchInput" placeholder="Type product name...">
+                        <input type="text" id="productSearchInput" placeholder="Type product name..." onkeydown="if(event.key==='Enter') applyProductSearch()">
                     </div>
-                    <button class="search-btn" onclick="applyProductSearch()">Search</button>
-                    <button class="clear-search-btn" onclick="clearProductSearch()">Clear</button>
+                    <button class="btn btn-purple" onclick="applyProductSearch()">Search</button>
+                    <button class="btn btn-gray" onclick="clearProductSearch()">Clear</button>
                 </div>
-                <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
+
+                <button class="btn btn-blue" onclick="refreshCurrentShop(true)">🔄 Refresh</button>
             </div>
 
-            <div id="loadingMessage" class="loading">Loading records...</div>
-            <div id="errorMessage" class="error" style="display: none;">Failed to load data.</div>
+            <!-- Loading Skeleton (First time only) -->
+            <div id="loadingOverlay" class="loading-overlay">
+                <div class="spinner"></div>
+                <div>Loading sales records from cloud...</div>
+            </div>
 
+            <!-- Content Area -->
             <div id="mainContent" style="display: none;">
+                <!-- Product Search Summary -->
                 <div class="product-search-summary" id="productSearchSummary">
-                    <h3 id="productSearchTitle">Product Summary</h3>
-                    <div class="row"><span>Total Sold</span><span id="productSearchSold">0</span></div>
-                    <div class="row"><span>Total Revenue</span><span class="currency" id="productSearchRevenue">PKR
-                            0</span></div>
-                    <div class="row"><span>Total Profit</span><span class="currency" id="productSearchProfit">PKR
-                            0</span></div>
+                    <h3 id="productSearchTitle" style="margin-bottom: 10px; color: #1e3a8a;">Product Summary</h3>
+                    <div class="row"><span>Total Units Sold:</span><span id="productSearchSold" style="font-weight: 700;">0</span></div>
+                    <div class="row"><span>Total Revenue:</span><span class="currency" id="productSearchRevenue">PKR 0</span></div>
+                    <div class="row"><span>Total Profit:</span><span class="currency" id="productSearchProfit">PKR 0</span></div>
                 </div>
 
+                <!-- Cashier Performance -->
                 <div class="section">
-                    <h2>👥 Sales by User</h2>
+                    <h2>👥 Cashier Performance</h2>
                     <div class="user-stats" id="userStats"></div>
                 </div>
 
+                <!-- Recent Sales Records -->
                 <div class="section">
                     <h2>📊 Recent Sales Records</h2>
                     <div class="table-container">
@@ -462,8 +564,8 @@
                                     <th>Unit Price</th>
                                     <th>Total</th>
                                     <th>Profit</th>
-                                    <th>Sold By</th>
-                                    <th>Category</th>
+                                    <th>Cashier</th>
+                                    <th>Cat</th>
                                 </tr>
                             </thead>
                             <tbody id="salesTableBody"></tbody>
@@ -472,8 +574,9 @@
                     <button id="loadMoreBtn" class="load-more-btn" onclick="loadMore()">Load More Records</button>
                 </div>
 
+                <!-- Top Products -->
                 <div class="section">
-                    <h2>🏆 Top Products (By Revenue)</h2>
+                    <h2>🏆 Top Selling Products (By Revenue)</h2>
                     <div class="table-container">
                         <table>
                             <thead>
@@ -490,58 +593,56 @@
                 </div>
             </div>
 
-            <div class="last-updated" id="lastUpdated">Last updated: Never</div>
+            <div class="last-updated" id="lastUpdated">Last updated: Initializing...</div>
         </div>
     </div>
 
     <script>
+        /**
+         * Ultra-Fast Dual-Shop Architecture
+         * 1. In-Memory Caching: Once a shop is fetched, switching between shops is INSTANTANEOUS (0ms).
+         * 2. Background Preloading: Loads the other shop quietly in the background so both are instant.
+         * 3. Single-Pass Math: Computes today's sales, totals, user stats and top products in a single pass.
+         */
+
         const SHOPS = {
             main: {
                 id: 'main',
                 name: 'Main Shop',
                 urdu: 'مین دکان',
+                icon: '🏪',
                 url: 'https://gist.githubusercontent.com/BalochTools123/5efc12ef2de66de1b52aeb838c92c158/raw/sales_data.json'
             },
             home: {
                 id: 'home',
                 name: 'Home Shop',
                 urdu: 'ہوم دکان',
+                icon: '🏠',
                 url: 'https://gist.githubusercontent.com/BalochTools123/024737ed4a3256a34186952908761b67/raw/sales.json'
             }
+        };
+
+        // In-memory cache for 0ms instantaneous shop toggling
+        const cache = {
+            main: null,
+            home: null
         };
 
         let currentShop = localStorage.getItem('bt_selected_shop') || 'main';
         if (!SHOPS[currentShop]) currentShop = 'main';
 
-        function switchShop(shopKey) {
-            if (!SHOPS[shopKey] || (shopKey === currentShop && originalSalesRecords.length > 0)) return;
-            currentShop = shopKey;
-            localStorage.setItem('bt_selected_shop', currentShop);
-            updateShopUI();
-            loadData();
-        }
-
-        function updateShopUI() {
-            const mainBtn = document.getElementById('shopBtnMain');
-            const homeBtn = document.getElementById('shopBtnHome');
-            if (mainBtn && homeBtn) {
-                mainBtn.classList.toggle('active', currentShop === 'main');
-                homeBtn.classList.toggle('active', currentShop === 'home');
-            }
-        }
-
-        let salesData = null;
         let originalSalesRecords = [];
         let currentFilteredRecords = [];
         let displayedRecords = [];
         let currentProductQuery = "";
-        let itemsPerPage = 100;
+        let itemsPerPage = 60;
         let currentPage = 1;
 
         const pkrFormatter = new Intl.NumberFormat('en-PK', {
             style: 'currency',
             currency: 'PKR',
-            minimumFractionDigits: 0
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
         });
 
         function formatCurrency(amount) {
@@ -562,16 +663,170 @@
             applyDateFilter();
         }
 
-        function applyDateFilter() {
-            if (!originalSalesRecords.length) { currentFilteredRecords = []; renderDashboard(); return; }
+        /**
+         * Switch between shops INSTANTLY:
+         * If the shop is already cached in memory, renders in 0ms!
+         */
+        function switchShop(shopKey) {
+            if (!SHOPS[shopKey] || shopKey === currentShop) return;
+            currentShop = shopKey;
+            localStorage.setItem('bt_selected_shop', currentShop);
+            updateShopUI();
 
-            const startDate = new Date(document.getElementById('startDate').value).setHours(0, 0, 0, 0);
-            const endDate = new Date(document.getElementById('endDate').value).setHours(23, 59, 59, 999);
+            if (cache[shopKey]) {
+                // ⚡ 0ms INSTANT SWITCH
+                applyShopData(shopKey, cache[shopKey]);
+                // Background re-fetch quietly
+                fetchShopData(shopKey, true);
+            } else {
+                // Need initial fetch
+                fetchShopData(shopKey, false);
+            }
+        }
+
+        function updateShopUI() {
+            const isMain = currentShop === 'main';
+            const mainBtn = document.getElementById('shopBtnMain');
+            const homeBtn = document.getElementById('shopBtnHome');
+            const titleEl = document.getElementById('activeShopTitle');
+
+            if (mainBtn && homeBtn) {
+                mainBtn.classList.toggle('active', isMain);
+                homeBtn.classList.toggle('active', !isMain);
+            }
+
+            if (titleEl) {
+                const s = SHOPS[currentShop];
+                titleEl.textContent = `${s.icon} ${s.name} (${s.urdu})`;
+            }
+        }
+
+        function setSyncStatus(text, isLive) {
+            const badge = document.getElementById('syncBadge');
+            const textEl = document.getElementById('syncText');
+            if (badge && textEl) {
+                textEl.textContent = text;
+                badge.classList.toggle('live', Boolean(isLive));
+            }
+        }
+
+        /**
+         * Normalizes records from either compact schema or long schema
+         */
+        function parseRecords(payload) {
+            const raw = Array.isArray(payload) ? payload : (payload.sales_records || []);
+            const parsed = [];
+            const seenIds = new Set();
+
+            for (let i = 0; i < raw.length; i++) {
+                const r = raw[i];
+                if (r.id !== undefined && seenIds.has(r.id)) continue;
+                if (r.id !== undefined) seenIds.add(r.id);
+
+                const rawCat = String(r.c !== undefined ? r.c : (r.category || 'B')).trim().toUpperCase();
+                const cleanCat = (rawCat === 'A' || rawCat === 'C') ? rawCat : 'B';
+
+                const rawDate = String(r.d !== undefined ? r.d : (r.sale_date || '')).trim();
+                const isoDate = rawDate.replace(' ', 'T');
+                const ts = new Date(isoDate).getTime() || new Date(rawDate).getTime() || 0;
+
+                parsed.push({
+                    id: r.id,
+                    product_name: r.p !== undefined ? r.p : (r.product_name || 'Item'),
+                    quantity: Number(r.q !== undefined ? r.q : r.quantity) || 0,
+                    sale_price: Number(r.s !== undefined ? r.s : r.sale_price) || 0,
+                    unit_price: Number(r.u !== undefined ? r.u : r.unit_price) || 0,
+                    total_price: Number(r.t !== undefined ? r.t : r.total_price) || 0,
+                    profit: Number(r.pr !== undefined ? r.pr : r.profit) || 0,
+                    sale_date: rawDate,
+                    sold_by: r.sb !== undefined ? r.sb : (r.sold_by || 'Admin'),
+                    category: cleanCat,
+                    timestamp: ts
+                });
+            }
+
+            parsed.sort((a, b) => b.sale_date.localeCompare(a.sale_date));
+            return parsed;
+        }
+
+        function applyShopData(shopKey, records) {
+            originalSalesRecords = records;
+            const metaEl = document.getElementById('activeShopMeta');
+            if (metaEl) {
+                metaEl.textContent = `(${records.length.toLocaleString()} records)`;
+            }
+
+            if (!document.getElementById('startDate').value) initDateFilters();
+            applyDateFilter();
+
+            const s = SHOPS[shopKey];
+            document.getElementById('lastUpdated').textContent =
+                `${s.icon} ${s.name} (${s.urdu}) • Last synchronized: ${new Date().toLocaleTimeString('en-PK')}`;
+
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        async function fetchShopData(shopKey, isBackground) {
+            const shopCfg = SHOPS[shopKey];
+            if (!isBackground) {
+                if (!cache[shopKey]) {
+                    document.getElementById('loadingOverlay').style.display = 'block';
+                    document.getElementById('mainContent').style.display = 'none';
+                }
+                setSyncStatus("Syncing...", false);
+            }
+
+            try {
+                const response = await fetch(`${shopCfg.url}?t=${Date.now()}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                const records = parseRecords(data);
+                cache[shopKey] = records;
+
+                if (currentShop === shopKey) {
+                    applyShopData(shopKey, records);
+                    setSyncStatus("Live & Synced", true);
+                }
+            } catch (err) {
+                console.error(`Error loading ${shopKey}:`, err);
+                if (currentShop === shopKey) {
+                    if (cache[shopKey]) {
+                        // Still display cached version
+                        applyShopData(shopKey, cache[shopKey]);
+                        setSyncStatus("Offline (Cached)", false);
+                    } else {
+                        document.getElementById('loadingOverlay').innerHTML =
+                            `<div style="color: #dc2626; font-weight: 600;">⚠️ Failed to load records for ${shopCfg.name}.<br><span style="font-size: 14px; color: #64748b;">Please check your internet connection and refresh.</span></div>`;
+                        setSyncStatus("Error", false);
+                    }
+                }
+            }
+        }
+
+        function refreshCurrentShop(manual) {
+            fetchShopData(currentShop, !manual ? false : false);
+        }
+
+        /**
+         * Ultra-fast Date + Category Filtering using numeric timestamps
+         */
+        function applyDateFilter() {
+            if (!originalSalesRecords.length) {
+                currentFilteredRecords = [];
+                renderDashboard();
+                return;
+            }
+
+            const startVal = document.getElementById('startDate').value;
+            const endVal = document.getElementById('endDate').value;
+            const startDate = startVal ? new Date(startVal).setHours(0, 0, 0, 0) : 0;
+            const endDate = endVal ? new Date(endVal).setHours(23, 59, 59, 999) : Infinity;
             const category = (document.getElementById('categoryFilter').value || 'All').trim().toUpperCase();
 
             currentFilteredRecords = originalSalesRecords.filter(record => {
                 const rDate = record.timestamp;
-                const rCat = (record.category || 'B').trim().toUpperCase();
+                const rCat = record.category;
                 return rDate >= startDate && rDate <= endDate && (category === "ALL" || rCat === category);
             });
 
@@ -589,21 +844,132 @@
             renderDashboard();
         }
 
+        /**
+         * Master Render: Calculates all stats in ONE single pass for blazing speed
+         */
         function renderDashboard() {
             currentPage = 1;
 
-            let finalRecords = currentProductQuery
+            const finalRecords = currentProductQuery
                 ? currentFilteredRecords.filter(r => r.product_name.toLowerCase().includes(currentProductQuery))
                 : currentFilteredRecords;
 
             displayedRecords = finalRecords;
 
-            const stats = calculateStats(finalRecords);
-            updateStatistics(stats);
-            updateUserStats(finalRecords);
-            updateTopProducts(finalRecords);
-            updateProductSearchSummary(finalRecords);
+            // Single-Pass Statistics Engine
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
+            const category = (document.getElementById('categoryFilter').value || 'All').trim().toUpperCase();
+
+            let todaySales = 0, todayProfit = 0, todayItems = 0;
+            let periodSales = 0, periodProfit = 0, periodItems = 0;
+            const users = {};
+            const products = {};
+
+            // 1. Compute today stats from original records
+            for (let i = 0; i < originalSalesRecords.length; i++) {
+                const r = originalSalesRecords[i];
+                const rDateOnly = (r.sale_date || '').split(' ')[0];
+                if (rDateOnly < todayStr) break; // records are pre-sorted descending
+
+                if (rDateOnly === todayStr && (category === "ALL" || r.category === category)) {
+                    todaySales += r.total_price;
+                    todayProfit += r.profit;
+                    todayItems += r.quantity;
+                }
+            }
+
+            // 2. Compute filtered metrics & breakdowns
+            for (let i = 0; i < finalRecords.length; i++) {
+                const r = finalRecords[i];
+                periodSales += r.total_price;
+                periodProfit += r.profit;
+                periodItems += r.quantity;
+
+                // Cashier map
+                const user = r.sold_by || 'Admin';
+                if (!users[user]) users[user] = { s: 0, p: 0, i: 0 };
+                users[user].s += r.total_price;
+                users[user].p += r.profit;
+                users[user].i += r.quantity;
+
+                // Product map
+                const pName = r.product_name;
+                if (!products[pName]) products[pName] = { q: 0, s: 0, p: 0 };
+                products[pName].q += r.quantity;
+                products[pName].s += r.total_price;
+                products[pName].p += r.profit;
+            }
+
+            // Update Cards
+            document.getElementById('todaySales').textContent = formatCurrency(todaySales);
+            document.getElementById('todayProfit').textContent = formatCurrency(todayProfit);
+            document.getElementById('todayItems').textContent = todayItems.toLocaleString();
+
+            document.getElementById('totalSales').textContent = formatCurrency(periodSales);
+            document.getElementById('totalProfit').textContent = formatCurrency(periodProfit);
+
+            // Update Cashier Cards
+            renderUserStats(users);
+
+            // Update Top 15 Products
+            renderTopProducts(products);
+
+            // Update Search Summary
+            renderSearchSummary(periodSales, periodProfit, periodItems);
+
+            // Render Sales Table
             refreshSalesTable();
+        }
+
+        function renderUserStats(users) {
+            const container = document.getElementById('userStats');
+            const entries = Object.entries(users);
+            if (!entries.length) {
+                container.innerHTML = `<div style="color: #94a3b8; font-style: italic;">No cashier data for this period.</div>`;
+                return;
+            }
+            container.innerHTML = entries.map(([name, data]) => `
+                <div class="user-card">
+                    <h3>👤 ${name}</h3>
+                    <div class="user-stat"><span>Sales:</span><span class="currency">${formatCurrency(data.s)}</span></div>
+                    <div class="user-stat"><span>Profit:</span><span class="currency">${formatCurrency(data.p)}</span></div>
+                    <div class="user-stat"><span>Items:</span><span>${data.i.toLocaleString()}</span></div>
+                </div>
+            `).join('');
+        }
+
+        function renderTopProducts(products) {
+            const tbody = document.getElementById('productsTableBody');
+            const sorted = Object.entries(products).sort((a, b) => b[1].s - a[1].s).slice(0, 15);
+            if (!sorted.length) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">No products sold in this period.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = sorted.map(([name, data]) => `
+                <tr>
+                    <td style="font-weight: 600;">${name}</td>
+                    <td>${data.q.toLocaleString()}</td>
+                    <td class="currency">${formatCurrency(data.s)}</td>
+                    <td class="currency" style="color: #16a34a;">${formatCurrency(data.p)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderSearchSummary(sales, profit, items) {
+            const summary = document.getElementById('productSearchSummary');
+            if (!currentProductQuery) {
+                summary.style.display = 'none';
+                return;
+            }
+            document.getElementById('productSearchTitle').textContent = `Search Results for: “${currentProductQuery}”`;
+            document.getElementById('productSearchSold').textContent = items.toLocaleString();
+            document.getElementById('productSearchRevenue').textContent = formatCurrency(sales);
+            document.getElementById('productSearchProfit').textContent = formatCurrency(profit);
+            summary.style.display = 'block';
         }
 
         function refreshSalesTable() {
@@ -613,23 +979,29 @@
             const slice = displayedRecords.slice(0, end);
 
             if (slice.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 30px; color:#888;">No sales records found for this shop.<br><span style="font-family: \'Noto Nastaliq Urdu\', serif;">اس دکان کے لیے ابھی کوئی سیلز ریکارڈ موجود نہیں ہے۔</span></td></tr>';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                            <div style="font-size: 16px; font-weight: 600; color: #64748b;">No sales records found for this period.</div>
+                            <div class="urdu-font" style="font-size: 15px; margin-top: 6px; color: #94a3b8;">اس دکان یا مدت کے لیے کوئی سیلز ریکارڈ موجود نہیں ہے۔</div>
+                        </td>
+                    </tr>`;
                 loadMoreBtn.style.display = 'none';
                 return;
             }
 
             tbody.innerHTML = slice.map(r => `
-        <tr>
-          <td>${new Date(r.sale_date).toLocaleString('en-PK')}</td>
-          <td>${r.product_name}</td>
-          <td>${r.quantity}</td>
-          <td>${formatCurrency(r.unit_price)}</td>
-          <td>${formatCurrency(r.total_price)}</td>
-          <td>${formatCurrency(r.profit)}</td>
-          <td>${r.sold_by}</td>
-          <td>${r.category || 'N/A'}</td>
-        </tr>
-      `).join('');
+                <tr>
+                    <td style="color: #64748b; font-size: 13px;">${r.sale_date}</td>
+                    <td style="font-weight: 600; color: #0f172a;">${r.product_name}</td>
+                    <td>${r.quantity}</td>
+                    <td class="currency">${formatCurrency(r.unit_price)}</td>
+                    <td class="currency" style="font-weight: 700;">${formatCurrency(r.total_price)}</td>
+                    <td class="currency" style="color: #16a34a;">${formatCurrency(r.profit)}</td>
+                    <td><span style="background: #e2e8f0; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;">${r.sold_by}</span></td>
+                    <td><span style="font-weight: 700; color: ${r.category === 'A' ? '#2563eb' : r.category === 'C' ? '#d97706' : '#16a34a'}">${r.category}</span></td>
+                </tr>
+            `).join('');
 
             loadMoreBtn.style.display = end >= displayedRecords.length ? 'none' : 'block';
         }
@@ -639,159 +1011,24 @@
             refreshSalesTable();
         }
 
-        function calculateStats(records) {
-            let sales = 0, profit = 0, items = 0;
-            for (let i = 0; i < records.length; i++) {
-                sales += (records[i].total_price || 0);
-                profit += (records[i].profit || 0);
-                items += (records[i].quantity || 0);
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateShopUI();
+            // 1. Fetch current selected shop
+            fetchShopData(currentShop, false);
+            // 2. Pre-load other shop in background after 1.5 seconds for 0ms instant toggle!
+            const otherShop = currentShop === 'main' ? 'home' : 'main';
+            setTimeout(() => {
+                fetchShopData(otherShop, true);
+            }, 1500);
+        });
+
+        // Re-check when window regains focus
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                fetchShopData(currentShop, true);
             }
-            return { sales, profit, items };
-        }
-        function updateStatistics(stats) {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const todayStr = `${year}-${month}-${day}`;
-            const category = (document.getElementById('categoryFilter').value || 'All').trim().toUpperCase();
-
-            let liveTodaySales = 0;
-            let liveTodayProfit = 0;
-            let liveTodayItems = 0;
-
-            for (let i = 0; i < originalSalesRecords.length; i++) {
-                const r = originalSalesRecords[i];
-                const recordDateOnly = (r.sale_date || '').split(' ')[0];
-                if (recordDateOnly < todayStr) {
-                    break;
-                }
-                const rCat = (r.category || 'B').trim().toUpperCase();
-
-                if (recordDateOnly === todayStr && (category === "ALL" || rCat === category)) {
-                    liveTodaySales += (Number(r.total_price) || 0);
-                    liveTodayProfit += (Number(r.profit) || 0);
-                    liveTodayItems += (Number(r.quantity) || 0);
-                }
-            }
-
-            document.getElementById('todaySales').textContent = formatCurrency(liveTodaySales);
-            document.getElementById('todayProfit').textContent = formatCurrency(liveTodayProfit);
-            document.getElementById('todayItems').textContent = liveTodayItems.toLocaleString();
-
-            document.getElementById('totalSales').textContent = formatCurrency(stats.sales);
-            document.getElementById('totalProfit').textContent = formatCurrency(stats.profit);
-        }
-
-
-        function updateUserStats(records) {
-            const users = {};
-            records.forEach(r => {
-                if (!users[r.sold_by]) users[r.sold_by] = { s: 0, p: 0, i: 0 };
-                users[r.sold_by].s += r.total_price;
-                users[r.sold_by].p += r.profit;
-                users[r.sold_by].i += r.quantity;
-            });
-
-            const container = document.getElementById('userStats');
-            container.innerHTML = Object.entries(users).map(([name, data]) => `
-        <div class="user-card">
-          <h3>👤 ${name}</h3>
-          <div class="user-stat"><span>Sales:</span><span class="currency">${formatCurrency(data.s)}</span></div>
-          <div class="user-stat"><span>Profit:</span><span class="currency">${formatCurrency(data.p)}</span></div>
-          <div class="user-stat"><span>Items:</span><span>${data.i.toLocaleString()}</span></div>
-        </div>
-      `).join('');
-        }
-
-        function updateTopProducts(records) {
-            const products = {};
-            records.forEach(r => {
-                if (!products[r.product_name]) products[r.product_name] = { q: 0, s: 0, p: 0 };
-                products[r.product_name].q += r.quantity;
-                products[r.product_name].s += r.total_price;
-                products[r.product_name].p += r.profit;
-            });
-
-            const sorted = Object.entries(products).sort((a, b) => b[1].s - a[1].s).slice(0, 15);
-            document.getElementById('productsTableBody').innerHTML = sorted.map(([name, data]) => `
-        <tr>
-          <td>${name}</td>
-          <td>${data.q}</td>
-          <td>${formatCurrency(data.s)}</td>
-          <td>${formatCurrency(data.p)}</td>
-        </tr>
-      `).join('');
-        }
-
-        function updateProductSearchSummary(records) {
-            const summary = document.getElementById('productSearchSummary');
-            if (!currentProductQuery) { summary.style.display = 'none'; return; }
-
-            const stats = calculateStats(records);
-            document.getElementById('productSearchTitle').textContent = `Results for: "${currentProductQuery}"`;
-            document.getElementById('productSearchSold').textContent = stats.items.toLocaleString();
-            document.getElementById('productSearchRevenue').textContent = formatCurrency(stats.sales);
-            document.getElementById('productSearchProfit').textContent = formatCurrency(stats.profit);
-            summary.style.display = 'block';
-        }
-
-        async function loadData() {
-            document.getElementById('loadingMessage').style.display = 'block';
-            document.getElementById('mainContent').style.display = 'none';
-
-            try {
-                const shopCfg = SHOPS[currentShop] || SHOPS.main;
-                updateShopUI();
-                const response = await fetch(`${shopCfg.url}?t=${Date.now()}`);
-                salesData = await response.json();
-                const rawRecords = Array.isArray(salesData) ? salesData : (salesData.sales_records || []);
-                const seenIds = new Set();
-                originalSalesRecords = [];
-                for (let i = 0; i < rawRecords.length; i++) {
-                    const r = rawRecords[i];
-                    if (r.id !== undefined && seenIds.has(r.id)) {
-                        continue; // de-duplicate any duplicate sales record IDs
-                    }
-                    if (r.id !== undefined) seenIds.add(r.id);
-
-                    const rawCat = String(r.c !== undefined ? r.c : (r.category || 'B')).trim().toUpperCase();
-                    const cleanCat = (rawCat === 'A' || rawCat === 'C') ? rawCat : 'B';
-                    const rawDate = String(r.d !== undefined ? r.d : (r.sale_date || '')).trim();
-                    const isoDate = rawDate.replace(' ', 'T');
-                    const ts = new Date(isoDate).getTime() || new Date(rawDate).getTime() || 0;
-
-                    originalSalesRecords.push({
-                        id: r.id,
-                        product_name: r.p !== undefined ? r.p : r.product_name,
-                        quantity: Number(r.q !== undefined ? r.q : r.quantity) || 0,
-                        sale_price: Number(r.s !== undefined ? r.s : r.sale_price) || 0,
-                        unit_price: Number(r.u !== undefined ? r.u : r.unit_price) || 0,
-                        total_price: Number(r.t !== undefined ? r.t : r.total_price) || 0,
-                        profit: Number(r.pr !== undefined ? r.pr : r.profit) || 0,
-                        sale_date: rawDate,
-                        sold_by: r.sb !== undefined ? r.sb : r.sold_by,
-                        category: cleanCat,
-                        timestamp: ts
-                    });
-                }
-                originalSalesRecords.sort((a, b) => b.sale_date.localeCompare(a.sale_date));
-
-                if (!document.getElementById('startDate').value) initDateFilters();
-
-                applyDateFilter();
-                document.getElementById('lastUpdated').textContent = `${shopCfg.name} (${shopCfg.urdu}) • Last updated: ${new Date().toLocaleString('en-PK')}`;
-
-                document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
-            } catch (e) {
-                document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'block';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', loadData);
-        document.addEventListener('visibilitychange', () => { if (!document.hidden) loadData(); });
+        });
     </script>
 </body>
 
