@@ -67,29 +67,40 @@
         }
 
         .shop-btn {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.05);
             color: #94a3b8;
-            border: none;
-            padding: 11px 26px;
+            border: 2px solid transparent;
+            padding: 10px 24px;
             font-size: 15px;
             font-weight: 700;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.15s ease-in-out;
+            transition: all 0.2s ease-in-out;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
+        .shop-btn .shop-dot {
+            font-size: 11px;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+
         .shop-btn:hover {
             color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.12);
         }
 
         .shop-btn.active {
             background: #2563eb;
             color: #ffffff;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+            border-color: #60a5fa;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
+        }
+
+        .shop-btn.active .shop-dot {
+            color: #4ade80;
         }
 
         /* Active Shop Banner */
@@ -442,10 +453,10 @@
             <div class="shop-switcher-container">
                 <div class="shop-switcher">
                     <button id="shopBtnMain" class="shop-btn active" onclick="switchShop('main')">
-                        🏪 Main Shop (مین دکان)
+                        <span class="shop-dot">●</span> 🏪 Main Shop (مین دکان)
                     </button>
                     <button id="shopBtnHome" class="shop-btn" onclick="switchShop('home')">
-                        🏠 Home Shop (ہوم دکان)
+                        <span class="shop-dot">●</span> 🏠 Home Shop (ہوم دکان)
                     </button>
                 </div>
             </div>
@@ -628,8 +639,13 @@
             home: null
         };
 
-        let currentShop = localStorage.getItem('bt_selected_shop') || 'main';
-        if (!SHOPS[currentShop]) currentShop = 'main';
+        // URL-aware default: /bw_sales/ defaults to Home Shop, /bt_sales/ defaults to Main Shop
+        const isBwSalesUrl = window.location.pathname.toLowerCase().includes('bw_sales');
+        const defaultShopKey = isBwSalesUrl ? 'home' : 'main';
+        const siteStorageKey = isBwSalesUrl ? 'bt_shop_choice_bw' : 'bt_shop_choice_bt';
+
+        let currentShop = sessionStorage.getItem(siteStorageKey) || defaultShopKey;
+        if (!SHOPS[currentShop]) currentShop = defaultShopKey;
 
         let originalSalesRecords = [];
         let currentFilteredRecords = [];
@@ -665,21 +681,23 @@
 
         /**
          * Switch between shops INSTANTLY:
-         * If the shop is already cached in memory, renders in 0ms!
+         * 1. Updates UI highlights immediately
+         * 2. If cached, renders in 0ms
+         * 3. Syncs fresh data in the background
          */
         function switchShop(shopKey) {
             if (!SHOPS[shopKey] || shopKey === currentShop) return;
             currentShop = shopKey;
-            localStorage.setItem('bt_selected_shop', currentShop);
+            sessionStorage.setItem(siteStorageKey, currentShop);
             updateShopUI();
 
             if (cache[shopKey]) {
-                // ⚡ 0ms INSTANT SWITCH
+                // ⚡ 0ms INSTANT SWITCH FROM MEMORY CACHE
                 applyShopData(shopKey, cache[shopKey]);
-                // Background re-fetch quietly
+                // Background refresh quietly
                 fetchShopData(shopKey, true);
             } else {
-                // Need initial fetch
+                // Initial fetch for this shop
                 fetchShopData(shopKey, false);
             }
         }
