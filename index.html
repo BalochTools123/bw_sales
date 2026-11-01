@@ -493,12 +493,12 @@
 
             const startDate = new Date(document.getElementById('startDate').value).setHours(0, 0, 0, 0);
             const endDate = new Date(document.getElementById('endDate').value).setHours(23, 59, 59, 999);
-            const category = document.getElementById('categoryFilter').value;
+            const category = (document.getElementById('categoryFilter').value || 'All').trim().toUpperCase();
 
             currentFilteredRecords = originalSalesRecords.filter(record => {
                 const rDate = record.timestamp;
-                const rCat = record.category || 'B';
-                return rDate >= startDate && rDate <= endDate && (category === "All" || rCat === category);
+                const rCat = (record.category || 'B').trim().toUpperCase();
+                return rDate >= startDate && rDate <= endDate && (category === "ALL" || rCat === category);
             });
 
             renderDashboard();
@@ -574,7 +574,7 @@
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
             const todayStr = `${year}-${month}-${day}`;
-            const category = document.getElementById('categoryFilter').value;
+            const category = (document.getElementById('categoryFilter').value || 'All').trim().toUpperCase();
 
             let liveTodaySales = 0;
             let liveTodayProfit = 0;
@@ -582,13 +582,13 @@
 
             for (let i = 0; i < originalSalesRecords.length; i++) {
                 const r = originalSalesRecords[i];
-                const recordDateOnly = r.sale_date.split(' ')[0];
+                const recordDateOnly = (r.sale_date || '').split(' ')[0];
                 if (recordDateOnly < todayStr) {
                     break;
                 }
-                const rCat = r.category || 'B';
+                const rCat = (r.category || 'B').trim().toUpperCase();
 
-                if (recordDateOnly === todayStr && (category === "All" || rCat === category)) {
+                if (recordDateOnly === todayStr && (category === "ALL" || rCat === category)) {
                     liveTodaySales += (Number(r.total_price) || 0);
                     liveTodayProfit += (Number(r.profit) || 0);
                     liveTodayItems += (Number(r.quantity) || 0);
@@ -664,21 +664,35 @@
                 const response = await fetch(`${GIST_URL}?t=${Date.now()}`);
                 salesData = await response.json();
                 const rawRecords = salesData.sales_records || [];
-                originalSalesRecords = rawRecords.map(r => ({
-                    id: r.id,
-                    product_name: r.p !== undefined ? r.p : r.product_name,
-                    quantity: r.q !== undefined ? r.q : r.quantity,
-                    sale_price: r.s !== undefined ? r.s : r.sale_price,
-                    unit_price: r.u !== undefined ? r.u : r.unit_price,
-                    total_price: r.t !== undefined ? r.t : r.total_price,
-                    profit: r.pr !== undefined ? r.pr : r.profit,
-                    sale_date: r.d !== undefined ? r.d : r.sale_date,
-                    sold_by: r.sb !== undefined ? r.sb : r.sold_by,
-                    category: r.c !== undefined ? r.c : r.category
-                }));
-                originalSalesRecords.forEach(r => {
-                    r.timestamp = new Date(r.sale_date).getTime();
-                });
+                const seenIds = new Set();
+                originalSalesRecords = [];
+                for (let i = 0; i < rawRecords.length; i++) {
+                    const r = rawRecords[i];
+                    if (r.id !== undefined && seenIds.has(r.id)) {
+                        continue; // de-duplicate any duplicate sales record IDs
+                    }
+                    if (r.id !== undefined) seenIds.add(r.id);
+
+                    const rawCat = String(r.c !== undefined ? r.c : (r.category || 'B')).trim().toUpperCase();
+                    const cleanCat = (rawCat === 'A' || rawCat === 'C') ? rawCat : 'B';
+                    const rawDate = String(r.d !== undefined ? r.d : (r.sale_date || '')).trim();
+                    const isoDate = rawDate.replace(' ', 'T');
+                    const ts = new Date(isoDate).getTime() || new Date(rawDate).getTime() || 0;
+
+                    originalSalesRecords.push({
+                        id: r.id,
+                        product_name: r.p !== undefined ? r.p : r.product_name,
+                        quantity: Number(r.q !== undefined ? r.q : r.quantity) || 0,
+                        sale_price: Number(r.s !== undefined ? r.s : r.sale_price) || 0,
+                        unit_price: Number(r.u !== undefined ? r.u : r.unit_price) || 0,
+                        total_price: Number(r.t !== undefined ? r.t : r.total_price) || 0,
+                        profit: Number(r.pr !== undefined ? r.pr : r.profit) || 0,
+                        sale_date: rawDate,
+                        sold_by: r.sb !== undefined ? r.sb : r.sold_by,
+                        category: cleanCat,
+                        timestamp: ts
+                    });
+                }
                 originalSalesRecords.sort((a, b) => b.sale_date.localeCompare(a.sale_date));
 
                 if (!document.getElementById('startDate').value) initDateFilters();
