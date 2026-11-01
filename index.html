@@ -318,6 +318,39 @@
                 align-items: stretch;
             }
         }
+
+        .shop-switcher {
+            display: inline-flex;
+            gap: 10px;
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .shop-btn {
+            background: transparent;
+            color: #cbd5e1;
+            border: none;
+            padding: 10px 22px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .shop-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .shop-btn.active {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
     </style>
 </head>
 
@@ -326,6 +359,14 @@
         <div class="header">
             <h1>🔧 BALOCH TOOLS & WELDING MATERIALS</h1>
             <p>Sales Dashboard & Analytics</p>
+            <div class="shop-switcher">
+                <button id="shopBtnMain" class="shop-btn active" onclick="switchShop('main')">
+                    🏪 Main Shop (مین دکان)
+                </button>
+                <button id="shopBtnHome" class="shop-btn" onclick="switchShop('home')">
+                    🏠 Home Shop (ہوم دکان)
+                </button>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -454,7 +495,40 @@
     </div>
 
     <script>
-        const GIST_URL = 'https://gist.githubusercontent.com/BalochTools123/5efc12ef2de66de1b52aeb838c92c158/raw/sales_data.json';
+        const SHOPS = {
+            main: {
+                id: 'main',
+                name: 'Main Shop',
+                urdu: 'مین دکان',
+                url: 'https://gist.githubusercontent.com/BalochTools123/5efc12ef2de66de1b52aeb838c92c158/raw/sales_data.json'
+            },
+            home: {
+                id: 'home',
+                name: 'Home Shop',
+                urdu: 'ہوم دکان',
+                url: 'https://gist.githubusercontent.com/BalochTools123/024737ed4a3256a34186952908761b67/raw/sales.json'
+            }
+        };
+
+        let currentShop = localStorage.getItem('bt_selected_shop') || 'main';
+        if (!SHOPS[currentShop]) currentShop = 'main';
+
+        function switchShop(shopKey) {
+            if (!SHOPS[shopKey] || (shopKey === currentShop && originalSalesRecords.length > 0)) return;
+            currentShop = shopKey;
+            localStorage.setItem('bt_selected_shop', currentShop);
+            updateShopUI();
+            loadData();
+        }
+
+        function updateShopUI() {
+            const mainBtn = document.getElementById('shopBtnMain');
+            const homeBtn = document.getElementById('shopBtnHome');
+            if (mainBtn && homeBtn) {
+                mainBtn.classList.toggle('active', currentShop === 'main');
+                homeBtn.classList.toggle('active', currentShop === 'home');
+            }
+        }
 
         let salesData = null;
         let originalSalesRecords = [];
@@ -489,7 +563,7 @@
         }
 
         function applyDateFilter() {
-            if (!originalSalesRecords.length) return;
+            if (!originalSalesRecords.length) { currentFilteredRecords = []; renderDashboard(); return; }
 
             const startDate = new Date(document.getElementById('startDate').value).setHours(0, 0, 0, 0);
             const endDate = new Date(document.getElementById('endDate').value).setHours(23, 59, 59, 999);
@@ -537,6 +611,12 @@
             const loadMoreBtn = document.getElementById('loadMoreBtn');
             const end = currentPage * itemsPerPage;
             const slice = displayedRecords.slice(0, end);
+
+            if (slice.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 30px; color:#888;">No sales records found for this shop.<br><span style="font-family: \'Noto Nastaliq Urdu\', serif;">اس دکان کے لیے ابھی کوئی سیلز ریکارڈ موجود نہیں ہے۔</span></td></tr>';
+                loadMoreBtn.style.display = 'none';
+                return;
+            }
 
             tbody.innerHTML = slice.map(r => `
         <tr>
@@ -661,9 +741,11 @@
             document.getElementById('mainContent').style.display = 'none';
 
             try {
-                const response = await fetch(`${GIST_URL}?t=${Date.now()}`);
+                const shopCfg = SHOPS[currentShop] || SHOPS.main;
+                updateShopUI();
+                const response = await fetch(`${shopCfg.url}?t=${Date.now()}`);
                 salesData = await response.json();
-                const rawRecords = salesData.sales_records || [];
+                const rawRecords = Array.isArray(salesData) ? salesData : (salesData.sales_records || []);
                 const seenIds = new Set();
                 originalSalesRecords = [];
                 for (let i = 0; i < rawRecords.length; i++) {
@@ -698,7 +780,7 @@
                 if (!document.getElementById('startDate').value) initDateFilters();
 
                 applyDateFilter();
-                document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleString('en-PK')}`;
+                document.getElementById('lastUpdated').textContent = `${shopCfg.name} (${shopCfg.urdu}) • Last updated: ${new Date().toLocaleString('en-PK')}`;
 
                 document.getElementById('loadingMessage').style.display = 'none';
                 document.getElementById('mainContent').style.display = 'block';
